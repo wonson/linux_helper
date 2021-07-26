@@ -1,0 +1,21 @@
+[Unit]
+
+Description=VNC Server for X11
+
+After=multi-user.target
+
+[Service]
+
+Type=simple
+ExecStartPre=/bin/bash -c "/bin/systemctl set-environment XAUTH_PATH=$(find /var/run/sddm -type f)"
+ExecStart=/usr/bin/x11vnc -auth ${XAUTH_PATH} -dontdisconnect -forever -shared -noxdamage -rfbauth /etc/x11vnc/passwd -rfbport 5900 -o /var/log/x11vnc.log
+
+ExecStop=/usr/bin/killall x11vnc
+
+Restart=on-failure
+
+Restart-sec=5
+
+[Install]
+
+WantedBy=multi-user.target
